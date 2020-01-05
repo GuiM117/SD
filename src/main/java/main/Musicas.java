@@ -34,25 +34,30 @@ public class Musicas {
     
     // dar Lock nesta operação
     public int inserirMusica(Musica m){
-        //lockMusicas.lock();
-        int id = 0;
-        boolean flag = false;
-        for(int i = 0; i<this.size && !flag ;i++){
-            if (this.musicCollection[i]==null){
-                id = i;
-                flag = true;
-            }else{
-                if (m.getTitulo().equals(this.musicCollection[i].getTitulo())){
-                    return -1;
+        lockMusicas.lock();
+        int id = -1;
+        try{
+            id = 0;
+            boolean flag = false;
+            for(int i = 0; i<this.size && !flag ;i++){
+                if (this.musicCollection[i]==null){
+                    id = i;
+                    flag = true;
+                }else{
+                    if (m.getTitulo().equals(this.musicCollection[i].getTitulo())){
+                        return -1;
+                    }
                 }
             }
+            m.setId(id);
+            this.musicCollection[id] = m;
+            if(id > this.size-2){
+                resizeMusicas();
+            }
+            return id;
+        } finally {
+            this.lockMusicas.unlock();
         }
-        m.setId(id);
-        this.musicCollection[id] = m;
-        if(id > this.size-2){
-            resizeMusicas();
-        }
-        return id;
     }
     
     public void resizeMusicas(){
@@ -61,6 +66,7 @@ public class Musicas {
         for(int i = 0;i<size;i++){
             m[i] = this.musicCollection[i];
         }
+        
         this.size*=2;
         this.musicCollection = m;
     }
