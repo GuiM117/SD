@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import static main.Menus.linha;
 import static main.Menus.loggedMenu;
 import static main.Menus.mainMenu;
-import static main.Menus.maisMusica;
 
 /**
  *
@@ -125,7 +124,6 @@ public class Client {
     }
     
     public void upload(){
-        String next="";
         String titulo = "";
         String interprete = "";
         String etiqueta = "";
@@ -134,57 +132,48 @@ public class Client {
         int ano = 0;
         int id = 0;
         try{
-            while(!(next.equals("n"))){
-                linha();
-                System.out.println("Insira Titulo da Musica: ");
-                titulo = this.stdIn.readLine();
-                this.output.println(titulo);
+            linha();
+            System.out.println("Insira Titulo da Musica: ");
+            titulo = this.stdIn.readLine();
+            this.output.println(titulo);
+            this.output.flush();
+            linha();
+            System.out.println("Insira Interprete da Musica: ");
+            interprete = this.stdIn.readLine();
+            this.output.println(interprete);
+            this.output.flush();
+            linha();
+            System.out.println("Insira Ano da Musica: ");
+            ano = Integer.parseInt(this.stdIn.readLine());
+            this.output.println(Integer.toString(ano));
+            this.output.flush();
+            linha();
+            System.out.println("Insira etiquetas uma a uma, insira done quando terminar");
+            while(!(etiqueta.equals("done"))){
+                etiqueta = this.stdIn.readLine();
+                this.output.println(etiqueta);
                 this.output.flush();
+            }  
+            linha();
+            System.out.println("Insira o path do ficheiro de musica");
+            path = this.stdIn.readLine();
+            conteudo = pathToBytes(path);
+            System.out.println("CONTEUDO received: "+conteudo.length);
+            this.output.println(Integer.toString(conteudo.length));
+            this.output.flush();
+            this.outputStream.write(conteudo);
+            this.outputStream.flush();
+            id = Integer.parseInt(this.input.readLine());
+            if(id<0){
                 linha();
-                System.out.println("Insira Interprete da Musica: ");
-                interprete = this.stdIn.readLine();
-                this.output.println(interprete);
-                this.output.flush();
+                System.out.println("Musica já existe. Tente Novamente.");
                 linha();
-                System.out.println("Insira Ano da Musica: ");
-                ano = Integer.parseInt(this.stdIn.readLine());
-                this.output.println(Integer.toString(ano));
-                this.output.flush();
+            }else{
                 linha();
-                System.out.println("Insira o path do ficheiro de musica");
-                path = this.stdIn.readLine();
-                conteudo = pathToBytes(path);
-                System.out.println("CONTEUDO received: "+conteudo.length);
-                this.output.println(Integer.toString(conteudo.length));
-                this.output.flush();
-                this.outputStream.write(conteudo);
-                this.outputStream.flush();
+                System.out.println("Musica inserida com sucesso com o ID "+id+"!");
                 linha();
-                System.out.println("Insira etiquetas uma a uma, insira done quando terminar");
-                while(!(etiqueta.equals("done"))){
-                    etiqueta = this.stdIn.readLine();
-                    this.output.println(etiqueta);
-                    this.output.flush();
-                }  
-                id = Integer.parseInt(this.input.readLine());
-                if(id<0){
-                    linha();
-                    System.out.println("Musica já existe. Tente Novamente.");
-                    linha();
-                    next = "y";
-                    this.output.println(next);
-                    this.output.flush();
-                }else{
-                    linha();
-                    System.out.println("Musica inserida com sucesso com o ID "+id+"!");
-                    linha();
-                    maisMusica();
-                    next = this.stdIn.readLine();
-                    this.output.println(next);
-                    this.output.flush();
-                }
-                conteudo = null;
             }
+            conteudo = null;
         }catch(IOException ex){
             System.out.println("erro no upload");
         }  
@@ -222,27 +211,7 @@ public class Client {
     public void download(){
         System.out.println(":Download:");
     }
-    
-    /*public byte[] pathToBytes(String path) throws IOException{
-        byte[] conteudo;
-        File f = new File(path);
-        ByteArrayOutputStream filestream = new ByteArrayOutputStream();
-        ObjectOutput out = null;
-        try {
-            out = new ObjectOutputStream(filestream);
-            out.writeObject(f);
-            out.flush();
-            byte[] bArray = filestream.toByteArray();
-            return bArray;
-        } 
-        finally{
-            try{
-                filestream.close();
-            } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        }
-    }*/
+
     public byte[] pathToBytes (String path) throws IOException{
         File file = new File(path);
         FileInputStream fis = null;

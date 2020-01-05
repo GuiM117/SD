@@ -108,7 +108,6 @@ public class ServerWorker implements Runnable {
     }
     
     public void upload(){
-        String next = "";
         String titulo = "";
         String interprete = "";
         String etiqueta = "";
@@ -118,40 +117,28 @@ public class ServerWorker implements Runnable {
         ArrayList<String> etiquetas = new ArrayList<String>();
         int ano = 0;
         try{
-            while(!(next.equals("n"))){
-                titulo = input.readLine();
-                System.out.println("TITULO received: "+titulo);
-                interprete = input.readLine();
-                System.out.println("INTERPRETE received: "+interprete);
-                ano = Integer.parseInt(input.readLine());
-                System.out.println("ANO received: "+ano);
-                tamanhoBytes = Integer.parseInt(input.readLine());
-                //conteudo = this.inputStream.readNBytes(tamanhoBytes);
-                /**
-                 *  Codigo TIF
-                 */
-                conteudo = new byte[tamanhoBytes];
-                int c;
-                int i=0;
-                while((c=this.inputStream.read(conteudo))!=-1)
-                    System.out.println("Bytes lidos"+c);
-                //
-                System.out.println("CONTEUDO received: "+ conteudo.length);
-                while(!(etiqueta.equals("done"))){
-                    etiqueta = this.input.readLine();
-                    if(!(etiqueta.equals("done"))){
-                       etiquetas.add(etiqueta); 
-                    }
-                    System.out.println("ETIQUETA received: "+etiqueta);
+            titulo = input.readLine();
+            System.out.println("TITULO received: "+titulo);
+            interprete = input.readLine();
+            System.out.println("INTERPRETE received: "+interprete);
+            ano = Integer.parseInt(input.readLine());
+            System.out.println("ANO received: "+ano);
+            while(!(etiqueta.equals("done"))){
+                etiqueta = this.input.readLine();
+                if(!(etiqueta.equals("done"))){
+                    etiquetas.add(etiqueta); 
                 }
-                linha();
-                Musica musica = new Musica(titulo,interprete,ano,conteudo,etiquetas);
-                id = musicas.inserirMusica(musica);
-                this.output.println(Integer.toString(id));
-                this.output.flush();
-                next = input.readLine();
-                conteudo = null;
+                System.out.println("ETIQUETA received: "+etiqueta);
             }
+            tamanhoBytes = Integer.parseInt(input.readLine());
+            conteudo = this.inputStream.readNBytes(tamanhoBytes);
+            System.out.println("CONTEUDO received: "+ conteudo.length);
+            linha();
+            Musica musica = new Musica(titulo,interprete,ano,conteudo,etiquetas);
+            id = musicas.inserirMusica(musica);
+            this.output.println(Integer.toString(id));
+            this.output.flush();
+            conteudo = null;
         } catch (IOException ex) {
             Logger.getLogger(ServerWorker.class.getName()).log(Level.SEVERE, null, ex);
         }

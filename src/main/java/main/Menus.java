@@ -21,11 +21,7 @@ public class Menus {
         System.out.println("1 - Publicar música");
         System.out.println("2 - Procurar música");
         System.out.println("3 - Descarregar música");
-        System.out.println("3 - Sair");
-    }
-    public static void maisMusica(){
-        System.out.println("Pretende Inserir mais musicas?");
-        System.out.println("y ou n");
+        System.out.println("4 - Sair");
     }
     public static void linha(){
         System.out.println("--------------------------------------------");
